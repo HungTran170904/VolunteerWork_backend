@@ -1,13 +1,15 @@
 import { EXPIRATION } from "../Config/index.js";
 import AuthService from "../Services/AuthService.js";
+import TokenHandler from "../Utils/TokenHandler.js";
 
 class AuthController{
           async login(req,res,next){
                     try{
                               const account=await AuthService.login(req.body);
-                              res.cookie("Authorization",TokenHandler.generateToken(account._id) ,{
+                              console.log("Account",account);
+                              res.cookie("Authorization",TokenHandler.generateToken(account) ,{
                                                   httpOnly: true, 
-                                                  expires: new Date(EXPIRATION*1000),
+                                                  maxAge: new Date(EXPIRATION*1000),
                                                   path: "/"
                                         });
                               return res.status(200).json(account);

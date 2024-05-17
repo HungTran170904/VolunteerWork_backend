@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { API_KEY, API_SECRET, CLOUDINARY_URL, CLOUD_NAME } from '../Config/index.js';
+import RequestError from '../Errors/RequestError.js';
 
 class CloudinaryService {
   constructor() {
@@ -14,6 +15,7 @@ class CloudinaryService {
 
   async uploadImage(file, existsUrl) {
     try {
+      if(!file) throw new RequestError("There is no uploaded image");
       const b64 = Buffer.from(file.buffer).toString("base64");
       const dataURI = "data:" + file.mimetype + ";base64," + b64;
       const options = {

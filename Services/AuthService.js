@@ -14,14 +14,13 @@ class AuthService{
                     if(!bcrypt.compareSync(password, account.password))
                               throw new RequestError("Password is incorrect");
                     account.password="";
-                    var refreshToken=TokenHandler.generateToken(account._id,"REFRESH");
-                    var accessToken=TokenHandler.generateToken(account._id,"ACCESS");
                     return account;
           }
           async #addNewAccount(newAccount, role){
                     if(!newAccount) throw new RequestError("Account is not null");
-                    if(!newAccount.email) throw new RequestError("Email is required");
                     if(!newAccount.password) throw new RequestError("Password is required");
+                    var existedAccount=await Account.findByEmail(newAccount.email);
+                    if(existedAccount) throw new RequestError("This email has been used. Please choose another email");
                     newAccount.role=role;
                     newAccount.isActive=false;
                     this.#sendOTPcode(newAccount);

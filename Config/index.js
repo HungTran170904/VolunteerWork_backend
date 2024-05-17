@@ -9,3 +9,5 @@ export const {DB_URL}=process.env;
 export const {SECRET_KEY,EXPIRATION}=process.env;
 // Email
 export const {EMAIL_USER, EMAIL_PASS}=process.env;
+// Cloudinary
+export const { API_KEY, API_SECRET, CLOUDINARY_URL, CLOUD_NAME }=process.env;

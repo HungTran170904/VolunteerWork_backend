@@ -7,8 +7,8 @@ const AuthMiddleware=async(req,res,next)=>{
           try {    
                     //decode jwt
                     const token=req.cookies["Authorization"];
-                    if(!token) throw new AuthError("Token does not exist")
-                    var accountId=jwt.verify(accessToken, SECRET_KEY);
+                    if(!token) throw new AuthError("Token does not exist");
+                    var accountId=jwt.verify(token, SECRET_KEY);
                     const account=await Account.findById(accountId);
                     //Authorization
                     if(req.originalUrl.indexOf("/admin")>=0&&account.role!=ADMIN)
