@@ -16,9 +16,7 @@ const StudentSchema=new Schema({
           avatarUrl: String,
           phoneNumber: String,
           titles: [String],
-          totalCoins: Number,
-          isActive: Boolean,
-          OTPCode: String,
+          totalCoins: Number
 });
 const Student=new mongoose.model("Student", StudentSchema);
 export default Student;

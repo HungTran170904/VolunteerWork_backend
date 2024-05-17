@@ -1,12 +1,8 @@
-const TokenHandler=()=>{
-          generateAccessToken=(user)=>{
-                    const dataInToken={userId: user.id,name: user.name, type: type}
-                    var token = jwt.sign(dataInToken, SERCRET_KEY, { algorithm:"HS256", expiresIn: 3600 });
-                    return token;
-          },
-          generateRefreshToken=(user)=>{
-                    const dataInToken={userId: user.id,name: user.name, type: type}
-                    var token = jwt.sign(dataInToken, SERCRET_KEY, { algorithm:"HS256", expiresIn: 5*3600 });
+import jwt from "jsonwebtoken";
+import { SECRET_KEY,EXPIRATION } from "../Config/index.js";
+const TokenHandler={
+          generateToken: (accountId)=>{
+                    var token = jwt.sign(accountId, SECRET_KEY, { algorithm:"HS256", expiresIn: EXPIRATION});
                     return token;
           }
 }

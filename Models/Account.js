@@ -1,4 +1,5 @@
 import mongoose, { Mongoose, Schema } from "mongoose";
+import bcrypt from "bcryptjs";
 
 const AccountSchema=new Schema({
           email:{
@@ -14,8 +15,18 @@ const AccountSchema=new Schema({
                     type: String,
                     required:true,
                     enum:["STUDENT","ORGANIZATION","ADMIN"]
-          }
+          },
+          isActive: Boolean,
+          otpCode: String,
+          otpTime: Date
 });
+AccountSchema.pre('save', async function (next) {
+          if (this.isModified('password')) {
+              this.password = await bcrypt.hash(this.password, 10);
+          }
+          next();
+});
+
 AccountSchema.statics.findByEmail=async(email)=>{
           return await Account.findOne({email: email});
 }

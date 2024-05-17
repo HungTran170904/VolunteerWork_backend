@@ -25,7 +25,6 @@ const options = {
               },
             ],
           },
-          apis: ["../Routers/*.js"],
+          apis: ["../Swagger/swagger-doc.yml"],
 };
 const SwaggerConfig=swaggerJSDoc(options);
-export default SwaggerConfig;
