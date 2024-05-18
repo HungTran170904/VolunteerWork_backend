@@ -6,7 +6,7 @@ const PostSchema=new Schema({
           content: String,
           imageUrl: String,
           likes: [ObjectId],
-          volunteerWorkId:{
+          volunteerWork:{
                     type: ObjectId,
                     ref: "VolunteerWork",
                     required: true

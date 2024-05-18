@@ -6,7 +6,7 @@ import compression from "compression";
 import cookieParser from "cookie-parser";
 import AuthRouter from "./Routers/AuthRouter.js";
 import ErrorMiddleware from "./Middlewares/ErrorMiddleware.js";
-import OrganizationRouter from "./Routers/OrganizationRouter.js";
+import OrgRouter from "./Routers/OrgRouter.js";
 import StudentRouter from "./Routers/StudentRouter.js";
 import AuthMiddleware from "./Middlewares/AuthMiddleware.js";
 
@@ -22,7 +22,7 @@ app.use(cookieParser())
 
 app.use("/api/auth",AuthRouter);
 app.use("/api/student",AuthMiddleware,StudentRouter);
-app.use("/api/organization",AuthMiddleware,OrganizationRouter);
+app.use("/api/organization",AuthMiddleware,OrgRouter);
 app.use(ErrorMiddleware);
 
 app.listen(PORT, ()=>{

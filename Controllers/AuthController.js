@@ -6,7 +6,6 @@ class AuthController{
           async login(req,res,next){
                     try{
                               const account=await AuthService.login(req.body);
-                              console.log("Account",account);
                               res.cookie("Authorization",TokenHandler.generateToken(account) ,{
                                                   httpOnly: true, 
                                                   maxAge: new Date(EXPIRATION*1000),

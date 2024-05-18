@@ -8,16 +8,8 @@ const QuestionSchema=new Schema({
           },
           answer: String,
           createdAt: Date,
-          studentId:{
-                    type: ObjectId,
-                    ref: "Student",
-                    required: true
-          },
-          volunteerWorkId:{
-                    type: ObjectId,
-                    ref: "VolunteerWork",
-                    required: true
-          }
+          studentId: ObjectId,
+          volunteerWorkId: ObjectId
 });
 const Question=new mongoose.model("Question", QuestionSchema);
 export default Question;

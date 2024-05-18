@@ -10,11 +10,18 @@ const VolunteerWorkSchema=Schema({
           description: String,
           receivedCoins: Number,
           needDonation: Boolean,
-          organizationId: {
+          organization: {
                     type: ObjectId,
                     ref: "Organization",
                     required: true
           }
 });
+VolunteerWorkSchema.statics.findWithPagination=async(page,limit)=>{
+          return await VolunteerWork.find()
+                                                            .limit(limit)
+                                                            .skip((page-1)*limit)
+                                                            .sort({createdAt:-1})
+                                                            .exec();
+}
 const VolunteerWork= new mongoose.model("VolunteerWork", VolunteerWorkSchema);
 export default VolunteerWork;

@@ -35,7 +35,6 @@ class CloudinaryService {
       return result.secure_url;
     } catch (error) {
       console.error(error);
-      // Handle the error appropriately (e.g., throw an exception or return an error message)
       throw new Error("Image upload failed");
     }
   }

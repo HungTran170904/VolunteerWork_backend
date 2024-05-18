@@ -8,10 +8,7 @@ const GiftSchema=new Schema({
           price: Double,
           imageUrl: String,
           requiredCoins: Number,
-          studentId: {
-                    type: ObjectId,
-                    ref: "Student"
-          }
+          studentId: ObjectId
 });
 const Gift=new mongoose.model("Gift", GiftSchema);
 export default Gift;
