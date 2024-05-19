@@ -20,6 +20,15 @@ class VolunteerController{
                               next(error);
                     }
           }
+          async getOrgVolunteerWorks(req, res, next){
+                    try{
+                              var volunteerWorks=await VolunteerService.getOrgVolunteerWorks(req.org,req.body);
+                              return res.status(200).json(volunteerWorks);
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
           async getRegisteredVolunteerWorks(req, res, next){
                     try{
                               var volunteerWorks= await VolunteerService.getRegisteredVolunteerWorks(req.student);
@@ -57,8 +66,8 @@ class VolunteerController{
                     }
           }
           async answerQuestion(req, res, next){
-                    try{
-                              await VolunteerService.addQuestion(req.body);
+                    try{                            
+                              await VolunteerService.answerQuestion(req.body);
                               return res.status(204).end();
                     }
                     catch(error){

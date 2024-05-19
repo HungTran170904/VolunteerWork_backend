@@ -8,6 +8,7 @@ const VolunteerRouter=express.Router();
 
 VolunteerRouter.post("/newVolunteerWork",OrgMiddleware,UploadMiddleware,VolunteerController.addVolunteerWork);
 VolunteerRouter.post("/volunteerWorks",VolunteerController.getVolunteerWorks);
+VolunteerRouter.post("/orgVolunteerWorks",OrgMiddleware,VolunteerController.getOrgVolunteerWorks);
 VolunteerRouter.post("/registeredVolunteerWorks",StudentMiddleware,VolunteerController.getRegisteredVolunteerWorks);
 VolunteerRouter.get("/attendedEventsOfWeek",StudentMiddleware,VolunteerController.getAttendedEventsOfWeek);
 VolunteerRouter.post("/newEvent",OrgMiddleware,VolunteerController.addEvent);

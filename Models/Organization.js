@@ -16,4 +16,4 @@ const OrganizationSchema = new Schema({
 	isVerified: Boolean,
 })
 const Organization = new mongoose.model('Organization', OrganizationSchema)
-export default Organization
+export default Organization;

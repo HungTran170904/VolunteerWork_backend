@@ -7,7 +7,7 @@ class GiftService{
                     var gift=JSON.parse(jsonData);
                     if(!gift.giftName) throw new RequestError("giftName is required");
                     if(!gift.requiredCoins) throw new RequestError("requiredCoins is required");
-                    gift.imageUrl=await CloudinaryService.uploadImage(file,null);
+                    if(file) gift.imageUrl=await CloudinaryService.uploadImage(file,null);
                     gift.receiverInfo=null;
                     return await Gift.create(gift);
           }

@@ -28,6 +28,16 @@ VolunteerWorkSchema.statics.findWithPagination=async(page,limit)=>{
                                         .sort({createdAt:-1})
                                         .exec();
 }
+VolunteerWorkSchema.statics.findWithPaginationAndOrgId=
+      async(page,limit,organizationId)=>{
+            return await VolunteerWork.find({organization: organizationId.toString()})
+                                          .populate("events")
+                                          .populate("questions")
+                                          .limit(limit)
+                                          .skip((page-1)*limit)
+                                          .sort({createdAt:-1})
+                                          .exec();
+}
 VolunteerWorkSchema.statics.findWithEvents=
           async(volunteerWorkIds, weekRange)=>{
                 var volunteerWorks= await VolunteerWork.find({

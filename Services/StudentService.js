@@ -3,7 +3,6 @@ import CloudinaryService from "./CloudinaryService.js";
 
 class StudentService{
           async getStudentInfo(studentId){
-                    console.log("Id",studentId);
                     var student=await Student.findById(studentId);
                     return student;
           }

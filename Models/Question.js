@@ -4,7 +4,7 @@ const {ObjectId}=Schema.Types;
 const QuestionSchema=new Schema({
           questionText: {
                     type: String,
-                    required: true
+                    //required: true
           },
           answer: String,
           createdAt: Date,
