@@ -6,4 +6,7 @@ export const ADMIN="ADMIN";
 export const ACCEPTED="ACCEPTED";
 export const UNACCEPTED="UNACCEPTED";
 export const WAITING="WAITING";
-export const LEAVED="LEAVED";
+export const FINISH="FINISH";
+// Token
+export const ACCESS="ACCESS";
+export const REFRESH="REFRESH";

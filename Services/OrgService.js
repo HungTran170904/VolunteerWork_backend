@@ -5,6 +5,10 @@ import { ADMIN, ORGANIZATION } from "../Utils/Constraints.js";
 import CloudinaryService from "./CloudinaryService.js";
 
 class OrgService{
+          async getOrganizationInfo(organizationId){
+                    var organization=await Organization.findById(organizationId);
+                    return organization;
+          }
           async uploadAvatar(org,file){
                     org.avatarUrl=await CloudinaryService.uploadImage(file,org.avatarUrl);
                     await org.save();

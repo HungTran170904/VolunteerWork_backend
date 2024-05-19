@@ -9,7 +9,8 @@ import AdminMiddleware from "../Middlewares/AdminMiddleware.js";
 
 const OrgRouter=express.Router();
 
-OrgRouter.get("/organizationInfo",OrgMiddleware,OrgController.getOrganizationInfo);
+OrgRouter.get("/loginedInfo",OrgMiddleware,OrgController.getLoginedInfo);
+OrgRouter.get("/organizationInfo",OrgController.getOrganizationInfo);
 OrgRouter.post("/uploadAvatar",OrgMiddleware,UploadMiddleware,OrgController.uploadAvatar);
 OrgRouter.get("/verifyOrganization",AdminMiddleware,OrgController.verifyOrganization);
 

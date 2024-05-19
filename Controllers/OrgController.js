@@ -1,9 +1,18 @@
 import OrgService from "../Services/OrgService.js";
 
 class OrgController{
-          async getOrganizationInfo(req,res,next){
+          async getLoginedInfo(req,res,next){
                     try{
                               return res.status(200).json(req.org);
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
+          async getOrganizationInfo(req,res,next){
+                    try{
+                              var organization=await OrgService.getOrganizationInfo(req.query["organizationId"]);
+                              return res.status(200).json(organization);
                     }
                     catch(error){
                               next(error);

@@ -6,7 +6,8 @@ import StudentMiddleware from "../Middlewares/StudentMiddleware.js";
 
 const StudentRouter=express.Router();
 
-StudentRouter.get("/studentInfo",StudentMiddleware,StudentController.getStudentInfo);
+StudentRouter.get("/loginedInfo",StudentMiddleware,StudentController.getLoginedInfo);
+StudentRouter.get("/studentInfo",StudentController.getStudentInfo);
 StudentRouter.post("/uploadAvatar",StudentMiddleware,UploadMiddleware,StudentController.uploadAvatar);
 
 export default StudentRouter;

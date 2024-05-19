@@ -1,5 +1,6 @@
 import { EMAIL_PASS, EMAIL_USER } from "../Config/index.js";
 import nodemailer from "nodemailer";
+import DateUtil from "../Utils/dateUtil.js";
 
 class EmailService{
           constructor(){
@@ -20,21 +21,34 @@ class EmailService{
               }
           });
           }
-          async sendOTPcode(destEmail, otpCode){
+          sendOTPcode(destEmail, otpCode){
                     var options = {
                               from: EMAIL_USER,
                               to: destEmail,
                               subject: 'VolunteerConnect: OTP code',
-                              html: `<div>The OTP code is <b>${otpCode}<b><div><br><div>Please enter OTP code within 10 minutes<div>`
+                              html: `<div>The OTP code is <b>${otpCode}</b></div></br><div>Please enter OTP code within 10 minutes</div>`
                     };
                    this.#send(options);
           }
-          async sendParticipantAccpeted(destEmail,studentName,volunteerName){
+          sendParticipantAccepted(student,volunteerWork, isAccepted){
+                    var content="";
+                    if(isAccepted)  content=`<div>Hi ${student.name}, you've been accepted to join the volunteer project named <b>${volunteerWork.title}</b>. Congratulations!!</div>`;
+                    else content=`<div>Hi ${student.name}, you has been rejected to join the volunteer project named <b>${volunteerWork.title}</b>. Wish you luck next time</div>`;
+                    content+=`</br><img width=200px height=200px src=${volunteerWork.imageUrl}/>`
                     var options = {
                               from: EMAIL_USER,
-                              to: destEmail,
+                              to: student.account.email,
                               subject: 'Accept to join Volunteer Work',
-                              html: `<h3>Hi ${studentName}, you've been accepted to join the volunteer project named ${volunteerName}. Congratulations!!<h3>`
+                              html: content
+                    };
+                   this.#send(options);
+          }
+          remindUpcomingVolunteerWork(student,event){
+                    var options = {
+                              from: EMAIL_USER,
+                              to: student.account.email,
+                              subject: 'Upcoming Volunteer Work',
+                              html: `<div>Hi ${student.name}, the volunteer event <b>${event.title}</b> will start at <b>${DateUtil.printDate(event.startDate)}</b>. Don't forget to attend this wonderful activity</div>`
                     };
                    this.#send(options);
           }

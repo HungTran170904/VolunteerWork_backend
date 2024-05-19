@@ -18,5 +18,12 @@ const StudentSchema=new Schema({
           titles: [String],
           totalCoins: Number
 });
+StudentSchema.statics.findByIds=async(studentIds)=>{
+          return await Student.find({
+                    _id: {$in: [studentIds]}
+          })
+          .populate("account")
+          .exec();
+}
 const Student=new mongoose.model("Student", StudentSchema);
 export default Student;

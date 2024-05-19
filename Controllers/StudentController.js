@@ -1,9 +1,18 @@
 import StudentService from "../Services/StudentService.js";
 
 class StudentController{
-          async getStudentInfo(req,res,next){
+          async getLoginedInfo(req,res,next){
                     try{
                               return res.status(200).json(req.student);
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
+          async getStudentInfo(req,res,next){
+                    try{
+                              var student=await StudentService.getStudentInfo(req.query["studentId"]);
+                              return res.status(200).json(student);
                     }
                     catch(error){
                               next(error);

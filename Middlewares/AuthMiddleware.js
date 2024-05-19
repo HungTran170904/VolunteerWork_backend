@@ -10,12 +10,10 @@ const AuthMiddleware=async(req,res,next)=>{
                     if(!token) throw new AuthError("Token does not exist");
                     var accountId=jwt.verify(token, SECRET_KEY);
                     const account=await Account.findById(accountId);
-                    //Authorization
-                    if(req.originalUrl.indexOf("/admin")>=0&&account.role!=ADMIN)
-                              throw new AuthError("You do not have permissions to access this url endpoint");
                     req.account=account;
                     next();
           } catch (error) {
+                    error.status=401;
                     next(error);
           }
 }

@@ -62,5 +62,13 @@ class AuthController{
                               next(error);
                     } 
           }
+          async logOut(req,res,next){
+                    try{
+                              return res.clearCookie("Authorization").status(204).end();
+                    }
+                    catch(error){
+                              next(error);
+                    } 
+          }
 }
 export default new AuthController();
