@@ -11,5 +11,7 @@ VolunteerRouter.post("/volunteerWorks",VolunteerController.getVolunteerWorks);
 VolunteerRouter.post("/registeredVolunteerWorks",StudentMiddleware,VolunteerController.getRegisteredVolunteerWorks);
 VolunteerRouter.get("/attendedEventsOfWeek",StudentMiddleware,VolunteerController.getAttendedEventsOfWeek);
 VolunteerRouter.post("/newEvent",OrgMiddleware,VolunteerController.addEvent);
+VolunteerRouter.post("/addQuestion",StudentMiddleware,VolunteerController.addQuestion);
+VolunteerRouter.post("/answerQuestion",OrgMiddleware,VolunteerController.answerQuestion);
 
 export default VolunteerRouter;

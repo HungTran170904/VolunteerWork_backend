@@ -1,14 +1,19 @@
 import mongoose, { Schema } from "mongoose";
-const {Double, ObjectId}=Schema.Types;
+const {ObjectId}=Schema.Types;
 const GiftSchema=new Schema({
           giftName: {
                     type: String,
                     required: true
           },
-          price: Double,
+          price: Number,
           imageUrl: String,
+          description: String,
           requiredCoins: Number,
-          studentId: ObjectId
+          receiverInfo:{
+                    studentId: ObjectId,
+                    receiverAddress: String,                 
+                    receivedDate: Date
+          }
 });
 const Gift=new mongoose.model("Gift", GiftSchema);
 export default Gift;

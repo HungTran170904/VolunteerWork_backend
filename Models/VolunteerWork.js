@@ -7,6 +7,7 @@ const VolunteerWorkSchema=Schema({
           createdAt: Date,
           endRegisteredDate: Date,
           events:[{type:ObjectId, ref:"Event"}],
+          questions: [{type: ObjectId, ref:"Question"}],
           imageUrl: String,
           description: String,
           receivedCoins: Number,
@@ -21,6 +22,7 @@ VolunteerWorkSchema.statics.findWithPagination=async(page,limit)=>{
           return await VolunteerWork.find()
                                         .populate("organization")
                                         .populate("events")
+                                        .populate("questions")
                                         .limit(limit)
                                         .skip((page-1)*limit)
                                         .sort({createdAt:-1})

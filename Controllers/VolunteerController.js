@@ -47,5 +47,23 @@ class VolunteerController{
                               next(error);
                     }
           }
+          async addQuestion(req, res, next){
+                    try{
+                              var question= await VolunteerService.addQuestion(req.student,req.body);
+                              return res.status(200).json(question);
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
+          async answerQuestion(req, res, next){
+                    try{
+                              await VolunteerService.addQuestion(req.body);
+                              return res.status(204).end();
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
 }
 export default new VolunteerController();

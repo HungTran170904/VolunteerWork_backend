@@ -7,6 +7,7 @@ import CloudinaryService from "./CloudinaryService.js";
 import Event from "../Models/Event.js";
 import EmailService from "./EmailService.js";
 import Student from "../Models/Student.js";
+import Question from "../Models/Question.js";
 
 class VolunteerService{
           async addVolunteerWork(org,jsonData,file){  
@@ -35,7 +36,7 @@ class VolunteerService{
                     }
           }
           async getVolunteerWorks({page, limit}){
-                    if(limit<=0) throw new RequestError("Page number must be positive");
+                    if(limit<=0) throw new RequestError("Limit must be positive");
                     if(page<=0) page=1;
                     return await VolunteerWork.findWithPagination(page,limit);
           }
@@ -63,6 +64,7 @@ class VolunteerService{
                     var volunteerWork=await VolunteerWork.findById(event.volunteerWorkId);
                     if(!volunteerWork) throw new RequestError("VolunteerWork of the event does not exist");
                     var savedEvent=await Event.create(event);
+                    if(!volunteerWork.events) volunteerWork.events=[];
                     volunteerWork.events.push(savedEvent._id);
                     await volunteerWork.save();
                     var timeOut=savedEvent.startDate.getTime()- (new Date()).getTime()-1000; //1 day ahead
@@ -76,6 +78,21 @@ class VolunteerService{
                               }
                     }
                     return savedEvent;
+          }
+          async addQuestion(student,question){
+                    if(!question.questionText||question.questionText.trim()=="")
+                              throw new RequestError("Please fill in your question about this volunteer work");
+                    var volunteerWork=await VolunteerWork.findById(question.volunteerWorkId);
+                    if(!volunteerWork) throw new RequestError("VolunteerWork of this question does not exist");
+                    question.studentId=student._id;
+                    question.createdAt=new Date();
+                    return await Question.create(question);
+          }
+          async answerQuestion({questionId, answer}){
+                    var question=await Question.findById(questionId);
+                    if(!question) throw new RequestError("QuestionId "+questionId+" does not exist");
+                    question.answer=answer;
+                    await question.save();
           }
 }
 export default new VolunteerService();
