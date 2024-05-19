@@ -29,7 +29,7 @@ class AuthService{
           }
           async registryStudent(newStudent){
                     if(!newStudent.name) throw new RequestError("Name is required");
-                    newStudent.totalCoins=0;
+                    newStudent.totalPoints=0;
                     var accountId=await this.#addNewAccount(newStudent.account,STUDENT);
                     newStudent.account=accountId;
                     var savedStudent=await Student.create(newStudent);
