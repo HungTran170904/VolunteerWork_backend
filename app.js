@@ -27,9 +27,9 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 
 app.use("/api/auth",AuthRouter);
-app.use("/api/student",AuthMiddleware,StudentRouter);
-app.use("/api/organization",AuthMiddleware,OrgRouter);
-app.use("/api/volunteerWork",AuthMiddleware,VolunteerRouter);
+app.use("/api/student",StudentRouter);
+app.use("/api/organization",OrgRouter);
+app.use("/api/volunteerWork",VolunteerRouter);
 app.use("/api/participant",AuthMiddleware,ParticipantRouter);
 app.use("/api/gift",AuthMiddleware,GiftRouter);
 app.use(ErrorMiddleware);

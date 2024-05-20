@@ -16,7 +16,10 @@ const VolunteerWorkSchema=Schema({
                     type: ObjectId,
                     ref: "Organization",
                     required: true
-          }
+      },
+      contactInfo: String,
+      requirements: String,
+          benefits: String,
 });
 VolunteerWorkSchema.statics.findWithPagination=async(page,limit)=>{
           return await VolunteerWork.find()
