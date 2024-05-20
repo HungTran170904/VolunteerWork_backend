@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import RequestError from "../Errors/RequestError.js";
 import Participant from "../Models/Participant.js";
 import VolunteerWork from "../Models/VolunteerWork.js";
-import DateUtil from "../Utils/dateUtil.js";
 import CloudinaryService from "./CloudinaryService.js";
 import Event from "../Models/Event.js";
 import EmailService from "./EmailService.js";
@@ -11,6 +10,7 @@ import Question from "../Models/Question.js";
 import createTransaction from "../Utils/Transaction.js";
 
 class VolunteerService{
+
           async addVolunteerWork(org,jsonData,file){ 
                     return await createTransaction(async()=>{
                               var volunteerWork=JSON.parse(jsonData);   
@@ -29,20 +29,40 @@ class VolunteerService{
                               return savedVolunteerWork;
                    });
           }
+
+          async getVolunteerWorkInfo(volunteerWorkId){
+                    var volunteerWork= await VolunteerWork.findById(volunteerWorkId)
+                                                                      .populate("organization")
+                                                                      .populate("questions")
+                                                                      .populate("events")
+                                                                      .exec();
+                    return volunteerWork;
+          }
+
           async getVolunteerWorks({page, limit}){
                     if(limit<=0) throw new RequestError("Limit must be positive");
                     if(page<=0) page=1;
-                    return await VolunteerWork.findWithPagination(page,limit);
+                    var volunteerWorks= await VolunteerWork.findWithPagination(page,limit);
+                    var total=await VolunteerWork.countAll();
+                    return  {
+                              data:volunteerWorks, 
+                              pagination: {total, currentPage: page}
+                    };
           }
-          async getOrgVolunteerWorks(org,{page, limit}){
-                    console.log("Ok1")
+
+          async getOrgVolunteerWorks({page, limit, organizationId}){
                     if(limit<=0) throw new RequestError("Limit must be positive");
                     if(page<=0) page=1;
-                    return await VolunteerWork.findWithPaginationAndOrgId(page,limit, org._id);
+                    var volunteerWorks= await VolunteerWork.findWithPaginationAndOrgId(page,limit,organizationId);
+                    var total=await VolunteerWork.countByOrgId(organizationId);
+                    return {
+                              data: volunteerWorks,
+                              pagination: {total, currentPage: page}
+                    };
           }
-          async getAttendedEventsOfWeek(student, week){
-                    var weekRange=DateUtil.getWeekDateRange(week);
-                    console.log("Week range",weekRange);
+
+          // weekRange={startDate, endDate}
+          async getEventsDuring(student,weekRange){
                     var volunteerWorkIds=await Participant.findVolunteerWorkIdsByStudentId(student._id);
                     var volunteerWorks=await VolunteerWork.findWithEvents(volunteerWorkIds,weekRange);
                     var events=[];
@@ -55,11 +75,13 @@ class VolunteerService{
                     }
                     return events;
           }
+
           async getRegisteredVolunteerWorks(student){
                     var volunteerWorkIds=await Participant.findVolunteerWorkIdsByStudentId(student._id);
                     var volunteerWorks=await VolunteerWork.findByIds(volunteerWorkIds);
                     return volunteerWorks;
           }
+
           async addEvent(event){ 
                     return await createTransaction(async()=>{
                               var volunteerWork=await VolunteerWork.findById(event.volunteerWorkId);
@@ -68,19 +90,20 @@ class VolunteerService{
                               if(!volunteerWork.events) volunteerWork.events=[];
                               volunteerWork.events.push(savedEvent._id);
                               await volunteerWork.save();
-                              var timeOut=savedEvent.startDate.getTime()- (new Date()).getTime()-1000; //1 day ahead
+                              var timeOut=savedEvent.startDate.getTime()- (new Date()).getTime()-24*3600*1000; //1 day ahead
                               if(timeOut>0){
                                         var studentIds=await Participant.findStudentIdsByVolunteerWorkId(volunteerWork._id);
                                         var students=await Student.findByIds(studentIds);
                                         for(var student of students){
                                                   setTimeout(()=>{
                                                             EmailService.remindUpcomingVolunteerWork(student,savedEvent);
-                                                  },1000);
+                                                  },timeOut);
                                         }                  
                               }
                               return savedEvent;
                     });
           }
+
           async addQuestion(student,question){
                     return await createTransaction(async()=>{
                               if(!question.questionText||question.questionText.trim()=="")
@@ -96,6 +119,7 @@ class VolunteerService{
                               return savedQuestion;
                     });
           }
+
           async answerQuestion({questionId, answer}){
                     var question=await Question.findById(questionId);
                     if(!question) throw new RequestError("QuestionId "+questionId+" does not exist");

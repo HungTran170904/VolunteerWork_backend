@@ -16,26 +16,25 @@ const VolunteerWorkSchema=Schema({
                     type: ObjectId,
                     ref: "Organization",
                     required: true
-      },
-      contactInfo: String,
-      requirements: String,
-          benefits: String,
+          }
 });
 VolunteerWorkSchema.statics.findWithPagination=async(page,limit)=>{
           return await VolunteerWork.find()
                                         .populate("organization")
-                                        .populate("events")
-                                        .populate("questions")
                                         .limit(limit)
                                         .skip((page-1)*limit)
                                         .sort({createdAt:-1})
                                         .exec();
 }
+VolunteerWorkSchema.statics.countAll=async()=>{
+      return await VolunteerWork.countDocuments();
+}
+VolunteerWorkSchema.statics.countByOrgId=async(organizationId)=>{
+      return await VolunteerWork.countDocuments({organization: organizationId});
+}
 VolunteerWorkSchema.statics.findWithPaginationAndOrgId=
       async(page,limit,organizationId)=>{
             return await VolunteerWork.find({organization: organizationId.toString()})
-                                          .populate("events")
-                                          .populate("questions")
                                           .limit(limit)
                                           .skip((page-1)*limit)
                                           .sort({createdAt:-1})

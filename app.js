@@ -8,7 +8,6 @@ import AuthRouter from "./Routers/AuthRouter.js";
 import ErrorMiddleware from "./Middlewares/ErrorMiddleware.js";
 import OrgRouter from "./Routers/OrgRouter.js";
 import StudentRouter from "./Routers/StudentRouter.js";
-import AuthMiddleware from "./Middlewares/AuthMiddleware.js";
 import VolunteerRouter from "./Routers/VolunteerRouter.js";
 import ParticipantRouter from "./Routers/ParticipantRouter.js";
 import GiftRouter from "./Routers/GiftRouter.js";
@@ -30,8 +29,8 @@ app.use("/api/auth",AuthRouter);
 app.use("/api/student",StudentRouter);
 app.use("/api/organization",OrgRouter);
 app.use("/api/volunteerWork",VolunteerRouter);
-app.use("/api/participant",AuthMiddleware,ParticipantRouter);
-app.use("/api/gift",AuthMiddleware,GiftRouter);
+app.use("/api/participant",ParticipantRouter);
+app.use("/api/gift",GiftRouter);
 app.use(ErrorMiddleware);
 
 app.listen(PORT, ()=>{

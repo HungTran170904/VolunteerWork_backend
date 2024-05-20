@@ -16,6 +16,7 @@ class AuthService{
                     account.password="";
                     return account;
           }
+
           async #addNewAccount(newAccount, role){
                     if(!newAccount) throw new RequestError("Account is not null");
                     if(!newAccount.password) throw new RequestError("Password is required");
@@ -27,6 +28,7 @@ class AuthService{
                     var account= await Account.create(newAccount);
                     return account.id;
           }
+
           async registryStudent(newStudent){
                     if(!newStudent.name) throw new RequestError("Name is required");
                     newStudent.totalPoints=0;
@@ -36,6 +38,7 @@ class AuthService{
                     savedStudent.account.password="";
                     return savedStudent;
           }
+
           async registryOrganization(newOrg){
                     if(!newOrg.name) throw new RequestError("Name is required");
                     newOrg.isVerified=false;
@@ -45,12 +48,14 @@ class AuthService{
                     savedOrg.account.password="";
                     return savedOrg;
           }
+
           async sendOTPcode(email){
                     var account=await Account.findByEmail(email);
                     if(!account) throw new RequestError("Email "+email+" does not exist");
                     this.#sendOTPcode(account);
                     await account.save();
           }
+
          #sendOTPcode(account){
                     var otpCode="";
                     for(let i=0;i<=5;i++) otpCode+=Math.floor(Math.random() * 10);
@@ -59,6 +64,7 @@ class AuthService{
                     account.otpTime=new Date(now.getTime()+10 * 60000);
                     EmailService.sendOTPcode(account.email, otpCode);
           }
+
           async activeAccount({email,otpCode}){
                     var account=await Account.findByEmail(email);
                     if(!account) throw new RequestError("Email "+email+" does not exist");
@@ -72,6 +78,7 @@ class AuthService{
                     account.isActive=true;
                     await account.save();
           }
+
           async changePassword({email, newPassword, otpCode}){
                     var account=await Account.findByEmail(email);
                     if(!account) throw new RequestError("Email "+email+" does not exist");
@@ -85,9 +92,6 @@ class AuthService{
                     account.isActive=true;
                     account.password=newPassword;
                     await account.save();
-          }
-          async getRefreshToken(){
-
           }
 }
 export default new AuthService();

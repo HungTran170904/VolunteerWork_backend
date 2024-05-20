@@ -7,13 +7,31 @@ import AuthMiddleware from "../Middlewares/AuthMiddleware.js";
 
 const VolunteerRouter=express.Router();
 
-VolunteerRouter.post("/newVolunteerWork",AuthMiddleware,OrgMiddleware,UploadMiddleware,VolunteerController.addVolunteerWork);
+// add a new volunteer work
+VolunteerRouter.post("/newVolunteerWork",OrgMiddleware,UploadMiddleware,VolunteerController.addVolunteerWork);
+
+// get info of a volunteer work. Provide volunteerWorkId as a param
+VolunteerRouter.get("/volunteerWorkInfo",VolunteerController.getVolunteerWorkInfo);
+
+// get all volunteer work existed in db
 VolunteerRouter.post("/volunteerWorks",VolunteerController.getVolunteerWorks);
-VolunteerRouter.post("/orgVolunteerWorks",AuthMiddleware,OrgMiddleware,VolunteerController.getOrgVolunteerWorks);
-VolunteerRouter.post("/registeredVolunteerWorks",AuthMiddleware,StudentMiddleware,VolunteerController.getRegisteredVolunteerWorks);
-VolunteerRouter.get("/attendedEventsOfWeek",AuthMiddleware,StudentMiddleware,VolunteerController.getAttendedEventsOfWeek);
-VolunteerRouter.post("/newEvent",AuthMiddleware,OrgMiddleware,VolunteerController.addEvent);
-VolunteerRouter.post("/addQuestion",AuthMiddleware,StudentMiddleware,VolunteerController.addQuestion);
-VolunteerRouter.post("/answerQuestion",AuthMiddleware,OrgMiddleware,VolunteerController.answerQuestion);
+
+// get all volunteer work of an organization
+VolunteerRouter.post("/orgVolunteerWorks",VolunteerController.getOrgVolunteerWorks);
+
+// get all volunteer work that a student has registered
+VolunteerRouter.get("/registeredVolunteerWorks",StudentMiddleware,VolunteerController.getRegisteredVolunteerWorks);
+
+// get all events that a student may attend during a time range. This endpoint is useful for making time table.
+VolunteerRouter.post("/eventsDuring",StudentMiddleware,VolunteerController.getEventsDuring);
+
+// add a new event to a volunteer work
+VolunteerRouter.post("/newEvent",OrgMiddleware,VolunteerController.addEvent);
+
+// this endpoint is used for student to raise question about the volunteer
+VolunteerRouter.post("/addQuestion",StudentMiddleware,VolunteerController.addQuestion);
+
+// the admin of organization answer the question
+VolunteerRouter.post("/answerQuestion",OrgMiddleware,VolunteerController.answerQuestion);
 
 export default VolunteerRouter;

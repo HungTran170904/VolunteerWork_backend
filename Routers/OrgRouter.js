@@ -10,9 +10,9 @@ import AuthMiddleware from "../Middlewares/AuthMiddleware.js";
 
 const OrgRouter=express.Router();
 
-OrgRouter.get("/loginedInfo",AuthMiddleware,OrgMiddleware,OrgController.getLoginedInfo);
+OrgRouter.get("/loginedInfo",OrgMiddleware,OrgController.getLoginedInfo);
 OrgRouter.get("/organizationInfo",OrgController.getOrganizationInfo);
-OrgRouter.post("/uploadAvatar",AuthMiddleware,OrgMiddleware,UploadMiddleware,OrgController.uploadAvatar);
-OrgRouter.get("/verifyOrganization",AuthMiddleware,AdminMiddleware,OrgController.verifyOrganization);
+OrgRouter.post("/uploadAvatar",OrgMiddleware,UploadMiddleware,OrgController.uploadAvatar);
+OrgRouter.get("/verifyOrganization",AdminMiddleware,OrgController.verifyOrganization);
 
 export default OrgRouter;

@@ -11,6 +11,18 @@ class VolunteerController{
                               next(error);
                     }
           }
+
+          async getVolunteerWorkInfo(req, res, next){
+                    try{
+                              console.log(req.query["volunteerWorkId"])
+                              var volunteerWork= await VolunteerService.getVolunteerWorkInfo(req.query["volunteerWorkId"]);
+                              return res.status(200).json(volunteerWork);
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
+
           async getVolunteerWorks(req, res, next){
                     try{
                               var volunteerWorks= await VolunteerService.getVolunteerWorks(req.body);
@@ -20,15 +32,17 @@ class VolunteerController{
                               next(error);
                     }
           }
+
           async getOrgVolunteerWorks(req, res, next){
                     try{
-                              var volunteerWorks=await VolunteerService.getOrgVolunteerWorks(req.org,req.body);
+                              var volunteerWorks=await VolunteerService.getOrgVolunteerWorks(req.body);
                               return res.status(200).json(volunteerWorks);
                     }
                     catch(error){
                               next(error);
                     }
           }
+
           async getRegisteredVolunteerWorks(req, res, next){
                     try{
                               var volunteerWorks= await VolunteerService.getRegisteredVolunteerWorks(req.student);
@@ -38,15 +52,17 @@ class VolunteerController{
                               next(error);
                     }
           }
-          async getAttendedEventsOfWeek(req, res, next){
+
+          async getEventsDuring(req, res, next){
                     try{
-                              var events= await VolunteerService.getAttendedEventsOfWeek(req.student,req.query["week"]);
+                              var events= await VolunteerService.getEventsDuring(req.student,req.body);
                               return res.status(200).json(events);
                     }
                     catch(error){
                               next(error);
                     }
           }
+
           async addEvent(req, res, next){
                     try{
                               var event= await VolunteerService.addEvent(req.body);
@@ -56,6 +72,7 @@ class VolunteerController{
                               next(error);
                     }
           }
+
           async addQuestion(req, res, next){
                     try{
                               var question= await VolunteerService.addQuestion(req.student,req.body);
@@ -65,6 +82,7 @@ class VolunteerController{
                               next(error);
                     }
           }
+
           async answerQuestion(req, res, next){
                     try{                            
                               await VolunteerService.answerQuestion(req.body);

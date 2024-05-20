@@ -6,8 +6,13 @@ import UploadMiddleware from "../Middlewares/UploadMiddleware.js";
 
 const GiftRouter=express.Router();
 
+// the admin (role=ADMIN) add a new gift
 GiftRouter.post("/addGift", AdminMiddleware,UploadMiddleware, GiftController.addGift);
+
+// get all gifts that haven't been awarded
 GiftRouter.get("/gifts",GiftController.getGifts);
+
+// a student registers to receive a gift
 GiftRouter.post("/awardGift",StudentMiddleware, GiftController.awardGift);
 
 export default GiftRouter;
