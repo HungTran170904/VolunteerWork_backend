@@ -7,7 +7,7 @@ const ParticipantRouter=express.Router();
 
 ParticipantRouter.post("/joinVolunteerWork",StudentMiddleware,ParticipantController.joinVolunteerWork);
 ParticipantRouter.post("/acceptParticipant",OrgMiddleware, ParticipantController.acceptParticipant);
-ParticipantRouter.post("/participants",OrgMiddleware,ParticipantController.getParticipants);
+ParticipantRouter.post("/participants",ParticipantController.getParticipants);
 ParticipantRouter.post("/feedback",OrgMiddleware,ParticipantController.giveFeedBack);
 
 export default ParticipantRouter;

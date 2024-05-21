@@ -44,11 +44,15 @@ class ParticipantService{
                     return participant;
           }
           async getParticipants({volunteerWorkId, status}){
-                    if(!status) return await Participant.find({volunteerWorkId:volunteerWorkId});
+            if (!status) {
+              return await Participant.find({
+					volunteerWorkId: volunteerWorkId,
+				}).populate('studentId')
+            }
                     else return await Participant.find({
-                              volunteerWorkId:volunteerWorkId,
-                              status: status
-                    });
+						volunteerWorkId: volunteerWorkId,
+						status: status,
+					}).populate('studentId')
           }
           async giveFeedBack({participantId,feedback, rating}){
                     return await createTransaction(async()=>{
