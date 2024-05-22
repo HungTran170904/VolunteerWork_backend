@@ -4,30 +4,26 @@ import Participant from "../Models/Participant.js";
 import VolunteerWork from "../Models/VolunteerWork.js";
 import CloudinaryService from "./CloudinaryService.js";
 import Event from "../Models/Event.js";
-import EmailService from "./EmailService.js";
-import Student from "../Models/Student.js";
 import Question from "../Models/Question.js";
-import createTransaction from "../Utils/Transaction.js";
+import SchedulerService from "./SchedulerService.js";
 
 class VolunteerService{
 
           async addVolunteerWork(org,jsonData,file){ 
-                    return await createTransaction(async()=>{
-                              var volunteerWork=JSON.parse(jsonData);   
-                              if(!volunteerWork.title)  throw new RequestError("Title is required");  
-                              if(!volunteerWork.receivedCoins) throw new RequestError("ReceivedCoins is required");
-                              volunteerWork.createdAt=new Date();
-                              volunteerWork.organization=org._id;  
-                              if(Array.isArray(volunteerWork.events)&&volunteerWork.events.length > 0){
-                                        const savedEvents= await Event.insertMany(volunteerWork.events);
-                                        volunteerWork.events=[];
-                                        for(var savedEvent of savedEvents) 
-                                                  volunteerWork.events.push(savedEvent._id);
-                              }
-                              if(file) volunteerWork.imageUrl=await CloudinaryService.uploadImage(file,null);
-                              var savedVolunteerWork= await VolunteerWork.create(volunteerWork);
-                              return savedVolunteerWork;
-                   });
+                    var volunteerWork=JSON.parse(jsonData);   
+                    if(!volunteerWork.title)  throw new RequestError("Title is required");  
+                    if(!volunteerWork.receivedCoins) throw new RequestError("ReceivedCoins is required");
+                    volunteerWork.createdAt=new Date();
+                    volunteerWork.organization=org._id;  
+                    if(Array.isArray(volunteerWork.events)&&volunteerWork.events.length > 0){
+                              const savedEvents= await Event.insertMany(volunteerWork.events);
+                              volunteerWork.events=[];
+                              for(var savedEvent of savedEvents) 
+                                        volunteerWork.events.push(savedEvent._id);
+                    }
+                    if(file) volunteerWork.imageUrl=await CloudinaryService.uploadImage(file,null);
+                    var savedVolunteerWork= await VolunteerWork.create(volunteerWork);
+                    return savedVolunteerWork;
           }
 
           async getVolunteerWorkInfo(volunteerWorkId){
@@ -83,41 +79,35 @@ class VolunteerService{
           }
 
           async addEvent(event){ 
-                    return await createTransaction(async()=>{
-                              var volunteerWork=await VolunteerWork.findById(event.volunteerWorkId);
-                              if(!volunteerWork) throw new RequestError("VolunteerWork of the event does not exist");
-                              var savedEvent=await Event.create(event);
-                              if(!volunteerWork.events) volunteerWork.events=[];
-                              volunteerWork.events.push(savedEvent._id);
-                              await volunteerWork.save();
-                              var timeOut=savedEvent.startDate.getTime()- (new Date()).getTime()-24*3600*1000; //1 day ahead
-                              if(timeOut>0){
-                                        var studentIds=await Participant.findStudentIdsByVolunteerWorkId(volunteerWork._id);
-                                        var students=await Student.findByIds(studentIds);
-                                        for(var student of students){
-                                                  setTimeout(()=>{
-                                                            EmailService.remindUpcomingVolunteerWork(student,savedEvent);
-                                                  },timeOut);
-                                        }                  
-                              }
-                              return savedEvent;
-                    });
+                    var volunteerWork=await VolunteerWork.findById(event.volunteerWorkId);
+                    if(!volunteerWork) throw new RequestError("VolunteerWork of the event does not exist");
+                    var savedEvent=await Event.create(event);
+                    if(!volunteerWork.events) volunteerWork.events=[];
+                    volunteerWork.events.push(savedEvent._id);
+                    await volunteerWork.save();
+                    SchedulerService.scheduleEvent(volunteerWork,savedEvent);
+                    return savedEvent;
+          }
+
+          async deleteEvent(eventId){
+                    var event=await Event.findById(eventId);
+                    if(!event) throw new RequestError("EventId "+eventId+" does not exist");
+                    SchedulerService.deleteScheduledEvent(eventId);
+                    await event.deleteOne();
           }
 
           async addQuestion(student,question){
-                    return await createTransaction(async()=>{
-                              if(!question.questionText||question.questionText.trim()=="")
-                                        throw new RequestError("Please fill in your question about this volunteer work");
-                              var volunteerWork=await VolunteerWork.findById(question.volunteerWorkId);
-                              if(!volunteerWork) throw new RequestError("VolunteerWork of this question does not exist");
-                              question.studentId=student._id;
-                              question.createdAt=new Date();
-                              var savedQuestion= await Question.create(question);
-                              if(!volunteerWork.questions) volunteerWork.questions=[savedQuestion._id];
-                              else volunteerWork.questions.push(savedQuestion._id);
-                              await volunteerWork.save();
-                              return savedQuestion;
-                    });
+                    if(!question.questionText||question.questionText.trim()=="")
+                              throw new RequestError("Please fill in your question about this volunteer work");
+                    var volunteerWork=await VolunteerWork.findById(question.volunteerWorkId);
+                    if(!volunteerWork) throw new RequestError("VolunteerWork of this question does not exist");
+                    question.studentId=student._id;
+                    question.createdAt=new Date();
+                    var savedQuestion= await Question.create(question);
+                    if(!volunteerWork.questions) volunteerWork.questions=[savedQuestion._id];
+                    else volunteerWork.questions.push(savedQuestion._id);
+                    await volunteerWork.save();
+                    return savedQuestion;
           }
 
           async answerQuestion({questionId, answer}){
@@ -125,6 +115,32 @@ class VolunteerService{
                     if(!question) throw new RequestError("QuestionId "+questionId+" does not exist");
                     question.answer=answer;
                     await question.save();
+          }
+
+          async updateVolunteerWork(jsonData, file){
+                    var uVolunteerWork=JSON.parse(jsonData);
+                    var sVolunteerWork=await VolunteerWork.findById(uVolunteerWork._id);
+                    if(!sVolunteerWork) throw new RequestError("VolunteerWorkId "+uVolunteerWork._id+" does not exist");
+
+                    if(file) sVolunteerWork.imageUrl=await CloudinaryService.uploadImage(file,sVolunteerWork.imageUrl);
+                    const updatedFields=["title","endRegisteredDate","description","receivedCoins",
+                                                            "needDonation","contactInfo","requirements","benefits"];
+                    for(var updatedField of updatedFields){
+                              if(uVolunteerWork[updatedField]&&uVolunteerWork[updatedField]!=null){
+                                        sVolunteerWork[updatedField]=uVolunteerWork[updatedField];
+                              }
+                    }
+                    await sVolunteerWork.save();
+                    return sVolunteerWork;
+          }
+
+          async deleteVolunteerWork(volunteerWorkId){
+                    var volunteerWork= await VolunteerWork.findById(volunteerWorkId);
+                    if(!volunteerWork) throw new RequestError("VolunteerWorkId "+volunteerWorkId+" does not exist");
+                    SchedulerService.deleteScheduledEvents(volunteerWork.events);
+                    await Event.deleteMany({_id:{ $in: volunteerWork.events}});                   
+                    await Question.deleteMany({_id:{ $in: volunteerWork.questions}}); 
+                    await volunteerWork.deleteOne(); 
           }
 }
 export default new VolunteerService();

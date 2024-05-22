@@ -28,10 +28,19 @@ VolunteerRouter.post("/eventsDuring",StudentMiddleware,VolunteerController.getEv
 // add a new event to a volunteer work
 VolunteerRouter.post("/newEvent",OrgMiddleware,VolunteerController.addEvent);
 
+// delete an event
+VolunteerRouter.delete("/deleteEvent/:id",OrgMiddleware,VolunteerController.deleteEvent);
+
 // this endpoint is used for student to raise question about the volunteer
 VolunteerRouter.post("/addQuestion",StudentMiddleware,VolunteerController.addQuestion);
 
 // the admin of organization answer the question
 VolunteerRouter.post("/answerQuestion",OrgMiddleware,VolunteerController.answerQuestion);
+
+// update volunteer work
+VolunteerRouter.post("/updateVolunteerWork",OrgMiddleware,UploadMiddleware,VolunteerController.updateVolunteerWork);
+
+// delete a volunteer work
+VolunteerRouter.delete("/deleteVolunteerWork/:id",OrgMiddleware,VolunteerController.deleteVolunteerWork);
 
 export default VolunteerRouter;

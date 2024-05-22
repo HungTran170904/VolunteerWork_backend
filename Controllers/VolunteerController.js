@@ -3,8 +3,7 @@ import VolunteerService from "../Services/VolunteerService.js";
 class VolunteerController{
           async addVolunteerWork(req, res, next){
                     try{
-                              var volunteerWork= await 
-                                        VolunteerService.addVolunteerWork(req.org,req.body.jsonData,req.file);
+                              var volunteerWork= await VolunteerService.addVolunteerWork(req.org,req.body.jsonData,req.file);
                               return res.status(200).json(volunteerWork);
                     }
                     catch(error){
@@ -73,6 +72,16 @@ class VolunteerController{
                     }
           }
 
+          async deleteEvent(req, res, next){
+                    try{                            
+                              await VolunteerService.deleteEvent(req.params["id"])
+                              return res.status(204).end();
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
+
           async addQuestion(req, res, next){
                     try{
                               var question= await VolunteerService.addQuestion(req.student,req.body);
@@ -86,6 +95,26 @@ class VolunteerController{
           async answerQuestion(req, res, next){
                     try{                            
                               await VolunteerService.answerQuestion(req.body);
+                              return res.status(204).end();
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
+
+          async updateVolunteerWork(req, res, next){
+                    try{                       
+                              var volunteerWork=await VolunteerService.updateVolunteerWork(req.body.jsonData, req.file);
+                              return res.status(200).json(volunteerWork);
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
+
+          async deleteVolunteerWork(req, res, next){
+                    try{                            
+                              await VolunteerService.deleteVolunteerWork(req.params["id"])
                               return res.status(204).end();
                     }
                     catch(error){

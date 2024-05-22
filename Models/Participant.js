@@ -2,10 +2,10 @@ import mongoose, { Schema } from "mongoose";
 const {ObjectId}=Schema.Types;
 
 const ParticipantSchema=new Schema({
-    studentId: {
-        type: ObjectId,
-        ref: 'Student'
-          },
+      studentId: {
+          type: ObjectId,
+          ref: 'Student'
+      },
           volunteerWorkId: ObjectId,
           status:{
                     type: String,

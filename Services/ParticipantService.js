@@ -3,7 +3,6 @@ import Participant from "../Models/Participant.js";
 import Student from "../Models/Student.js";
 import VolunteerWork from "../Models/VolunteerWork.js";
 import { ACCEPTED, FINISH, UNACCEPTED, WAITING } from "../Utils/Constraints.js";
-import createTransaction from "../Utils/Transaction.js";
 import EmailService from "./EmailService.js";
 
 class ParticipantService{
@@ -30,49 +29,34 @@ class ParticipantService{
                     participant.status=isAccepted?ACCEPTED:UNACCEPTED;
                     await participant.save();
                     EmailService.sendParticipantAccepted(student,volunteerWork, isAccepted);
-                    if(isAccepted){
-                              await volunteerWork.populate("events");
-                              for(var event of volunteerWork.events){
-                                        var timeOut=event.startDate.getTime()- (new Date()).getTime()-24*3600*1000;
-                                        if(timeOut>0){
-                                                  setTimeout(()=>{
-                                                            EmailService.remindUpcomingVolunteerWork(student,event);
-                                                  },1000);
-                                        } 
-                              }
-                    }
                     return participant;
           }
           async getParticipants({volunteerWorkId, status}){
-            if (!status) {
-              return await Participant.find({
-					volunteerWorkId: volunteerWorkId,
-				}).populate('studentId')
-            }
-                    else return await Participant.find({
-						volunteerWorkId: volunteerWorkId,
-						status: status,
-					}).populate('studentId')
+            if (!status) return await Participant.find({
+					                    volunteerWorkId: volunteerWorkId,
+				              }).populate('studentId');
+            else return await Participant.find({
+						            volunteerWorkId: volunteerWorkId,
+						            status: status,
+					            }).populate('studentId');
           }
           async giveFeedBack({participantId,feedback, rating}){
-                    return await createTransaction(async()=>{
-                              if(rating<0||rating>10) throw new RequestError("Rating must be in range [0,10]");
-                              var participant= await Participant.findById(participantId);
-                              if(!participant) throw new RequestError("ParticipantId "+participantId+" does not exist");
-                              var volunteerWork=await VolunteerWork.findById(participant.volunteerWorkId);
-                              var student=await Student.findById(participant.studentId);
+            if(rating<0||rating>10) throw new RequestError("Rating must be in range [0,10]");
+            var participant= await Participant.findById(participantId);
+            if(!participant) throw new RequestError("ParticipantId "+participantId+" does not exist");
+            var volunteerWork=await VolunteerWork.findById(participant.volunteerWorkId);
+            var student=await Student.findById(participant.studentId);
 
-                              participant.feedback=feedback;
-                              participant.rating=rating;
-                              if(participant.receivedCoins) student.totalCoins-=participant.receivedCoins;
-                              participant.receivedCoins=(rating*volunteerWork.receivedCoins)/10;
-                              participant.status=FINISH;
-                              await participant.save();
-                          
-                              student.totalCoins+=participant.receivedCoins;
-                              await student.save();
-                              return participant;
-                    });
+            participant.feedback=feedback;
+            participant.rating=rating;
+            if(participant.receivedCoins) student.totalPoints-=participant.receivedCoins;
+            participant.receivedCoins=(rating*volunteerWork.receivedCoins)/10;
+            participant.status=FINISH;
+            await participant.save();
+        
+            student.totalCoins+=participant.receivedCoins;
+            await student.save();
+            return participant;
           }
 }
 export default new ParticipantService();

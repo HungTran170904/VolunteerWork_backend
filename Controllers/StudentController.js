@@ -1,3 +1,4 @@
+import Student from "../Models/Student.js";
 import StudentService from "../Services/StudentService.js";
 
 class StudentController{
@@ -9,6 +10,7 @@ class StudentController{
                               next(error);
                     }
           }
+
           async getStudentInfo(req,res,next){
                     try{
                               var student=await StudentService.getStudentInfo(req.query["studentId"]);
@@ -18,10 +20,21 @@ class StudentController{
                               next(error);
                     }
           }
+
           async uploadAvatar(req,res,next){
                     try{
                               var avatarUrl=await StudentService.uploadAvatar(req.student, req.file);
                               return res.status(200).json(avatarUrl);
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
+
+          async updateStudent(req, res, next){
+                    try{                            
+                              var student= await StudentService.updateStudent(req.student,req.body);
+                              return res.status(200).json(student);
                     }
                     catch(error){
                               next(error);

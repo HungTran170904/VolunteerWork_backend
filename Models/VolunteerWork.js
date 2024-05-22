@@ -62,7 +62,6 @@ VolunteerWorkSchema.statics.findByIds=
                     var volunteerWorks= await VolunteerWork.find({
                               _id: {$in: volunteerWorkIds}
                     })
-                    .populate("events")
                     .populate("organization")
                     .exec();
                     return volunteerWorks;

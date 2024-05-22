@@ -1,12 +1,15 @@
 import mongoose from "mongoose";
 
-const createTransaction=async(func)=>{
+const createTransaction=async(func, callback)=>{
           const session = await mongoose.startSession();
                     session.startTransaction();
                     try{
-                              return await func();
+                              const result = await func();
+                              await session.commitTransaction();
+                              return result;
                     } catch(error){
                               await session.abortTransaction();
+                              if(callback) await callback();
                               throw error;
                     } finally{
                               session.endSession();

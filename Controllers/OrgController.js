@@ -9,6 +9,7 @@ class OrgController{
                               next(error);
                     }
           }
+
           async getOrganizationInfo(req,res,next){
                     try{
                               var organization=await OrgService.getOrganizationInfo(req.query["organizationId"]);
@@ -18,6 +19,7 @@ class OrgController{
                               next(error);
                     }
           }
+
           async uploadAvatar(req,res,next){
                     try{
                               var avatarUrl=await OrgService.uploadAvatar(req.org, req.file);
@@ -27,10 +29,21 @@ class OrgController{
                               next(error);
                     }
           }
+
           async verifyOrganization(req,res,next){
                     try{
                               await OrgService.verifyOrganization(req.query["organizationId"]);
                               return res.status(204).end();
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
+
+          async updateOrganization(req, res, next){
+                    try{                            
+                              var org=await OrgService.updateOrganization(req.org,req.body);
+                              return res.status(200).json(org);
                     }
                     catch(error){
                               next(error);
