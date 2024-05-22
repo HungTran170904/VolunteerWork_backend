@@ -8,7 +8,10 @@ const QuestionSchema=new Schema({
           },
           answer: String,
           createdAt: Date,
-          studentId: ObjectId
+    studentId: {
+        type: ObjectId,
+        ref: "Student"
+          }
 });
 const Question=new mongoose.model("Question", QuestionSchema);
 export default Question;

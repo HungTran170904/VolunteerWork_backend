@@ -29,7 +29,7 @@ class VolunteerService{
           async getVolunteerWorkInfo(volunteerWorkId){
                     var volunteerWork= await VolunteerWork.findById(volunteerWorkId)
                                                                       .populate("organization")
-                                                                      .populate("questions")
+                                                                      .populate({path: 'questions', populate: {path: 'studentId'}})
                                                                       .populate("events")
                                                                       .exec();
                     return volunteerWork;

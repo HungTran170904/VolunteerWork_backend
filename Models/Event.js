@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 const {ObjectId}=Schema.Types;
 const EventSchema=new Schema({
           title: String,
-          desciption: String,
+          description: String,
           startDate: Date,
           endDate: Date
 });

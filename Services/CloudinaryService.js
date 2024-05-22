@@ -27,9 +27,9 @@ class CloudinaryService {
         format: "png",
       };
 
-      if (existsUrl) {
-        options.public_id = existsUrl.split("/").slice(-1)[0].split(".")[0];
-      }
+      if (existsUrl && existsUrl.includes('res.cloudinary.com')) {
+			options.public_id = existsUrl.split('/').slice(-1)[0].split('.')[0]
+		}
 
       const result = await cloudinary.uploader.upload(dataURI, options);
       return result.secure_url;
