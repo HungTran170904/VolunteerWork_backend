@@ -15,6 +15,7 @@ class ParticipantService{
 
                     participant.studentId=student._id;
                     participant.status=WAITING;
+            participant.createdAt = new Date();
                     return await Participant.create(participant);
           }
 
@@ -63,7 +64,7 @@ class ParticipantService{
               participant.status=FINISH;
               await participant.save({session});
           
-              student.totalCoins+=participant.receivedCoins;
+              student.totalPoints+=participant.receivedCoins;
               await student.save({session});
               return participant;
             });

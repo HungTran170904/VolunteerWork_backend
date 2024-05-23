@@ -19,9 +19,9 @@ class GiftService{
                     if(!gift) throw new RequestError("GiftId "+giftId+" does not exist");
                     if(gift.receiverInfo.toObject()!=null)
                               throw new RequestError("Apologies! This gift has already been granted");
-                    if(student.totalCoins<gift.requiredCoins)
+                    if(student.totalPoints<gift.requiredCoins)
                               throw new RequestError("Sorry! You don't have enough coins to get this gift");
-                    student.totalCoins-=gift.requiredCoins;
+                    student.totalPoints-=gift.requiredCoins;
                     gift.receiverInfo={
                               studentId: student._id,
                               receiverAddress,                 

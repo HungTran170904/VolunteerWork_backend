@@ -18,7 +18,7 @@ class StudentService{
                     const updatedFields=["name","faculty","school","quote","attendedActivities",
                                                             "gender","phoneNumber","dob","studentCode"];
                     for(var updatedField of updatedFields){
-                              if(uStudent[updatedField]&&uStudent[updatedField]!=null){
+                              if(uStudent.hasOwnProperty(updatedField)){
                                         sStudent[updatedField]=uStudent[updatedField];
                               }
                     }

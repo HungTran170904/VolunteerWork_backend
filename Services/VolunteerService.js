@@ -133,7 +133,7 @@ class VolunteerService{
                     const updatedFields=["title","endRegisteredDate","description","receivedCoins",
                                                             "needDonation","contactInfo","requirements","benefits"];
                     for(var updatedField of updatedFields){
-                              if(uVolunteerWork[updatedField]&&uVolunteerWork[updatedField]!=null){
+                              if(uVolunteerWork.hasOwnProperty(updatedField)){
                                         sVolunteerWork[updatedField]=uVolunteerWork[updatedField];
                               }
                     }
