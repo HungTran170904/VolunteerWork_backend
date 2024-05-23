@@ -1,32 +1,39 @@
 import Participant from "../Models/Participant.js";
 import Student from "../Models/Student.js";
+import VolunteerWork from "../Models/VolunteerWork.js";
 import EmailService from "./EmailService.js";
+import schedule from "node-schedule";
 
 class SchedulerService{
-          constructor(){
-                    this.scheduledEvents=new Map();
+          async loadScheduledEvents(){
+                    var volunteerWorks= await VolunteerWork.find().populate("events");
+                    for(var volunteerWork of volunteerWorks){
+                              for(var event of volunteerWork.events){
+                                        this.scheduleEvent(volunteerWork,event,true);                                      
+                              }
+                    }
           }
 
           scheduleEvent(volunteerWork,event, noDeletion){
                     if(!noDeletion) this.deleteScheduledEvent(event._id);
-                    //1 day ahead
-                    var time=event.startDate.getTime()- (new Date()).getTime()-24*3600*1000;
-                    if(time<=0) return;
-                    var timeOut=setTimeout(async() => {
+                    if(!event.startDate) return;
+                    var scheduledDate=new Date(event.startDate);
+                    scheduledDate.setDate(-1);
+                    var now=new Date();
+                    if(scheduledDate>now)
+                    schedule.scheduleJob(event._id.toString(),scheduledDate,async()=>{
                               var studentIds=await Participant.findStudentIdsByVolunteerWorkId(volunteerWork._id);
                               var students=await Student.findByIds(studentIds);
                               EmailService.remindUpcomingVolunteerWork(students,event);
-                              this.scheduledEvents.delete(event._id);
-                    }, time);
-                    this.scheduledEvents.set(event._id.toString(),timeOut);
+                    });
+                   // console.log("event:","Id:"+event._id+"-Date"+scheduledDate);
           }
 
           async recoverScheduledEvents(volunteerWork){
                    await volunteerWork.populate("events");
                     for(var event of volunteerWork.events){
-                              if(!this.scheduledEvents.has(event._id)){
-                                        this.scheduleEvent(volunteerWork,event,true);
-                              }
+                              const job=schedule.scheduledJobs[event._id.toString()];
+                              if(!job) this.scheduleEvent(volunteerWork,event,true);
                     }
           }
 
@@ -34,12 +41,8 @@ class SchedulerService{
                     if(eventId instanceof Object && eventId.constructor.name === 'ObjectID'){
                               eventId=eventId.toString();
                     }
-                    if(this.scheduledEvents.has(eventId)){
-                              var timeOut=this.scheduledEvents.get(eventId);
-                              clearTimeout(timeOut);
-                              this.scheduledEvents.delete(eventId);
-                              console.log("Ok")
-                    }
+                    const job=schedule.scheduledJobs[eventId];
+                    if(job) job.cancel();
           }
 
           deleteScheduledEvents(eventIds){

@@ -11,19 +11,21 @@ import StudentRouter from "./Routers/StudentRouter.js";
 import VolunteerRouter from "./Routers/VolunteerRouter.js";
 import ParticipantRouter from "./Routers/ParticipantRouter.js";
 import GiftRouter from "./Routers/GiftRouter.js";
+import SchedulerService from "./Services/SchedulerService.js";
 
-const app=express()
+const app=express();
 
-connectDatabase()
+connectDatabase();
+SchedulerService.loadScheduledEvents();
 
 app.use(cors({
           origin: ['http://localhost:3000'],
           credentials: true,
-}))
-app.use(compression())
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
-app.use(cookieParser())
+}));
+app.use(compression());
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.use(cookieParser());
 
 app.use("/api/auth",AuthRouter);
 app.use("/api/student",StudentRouter);

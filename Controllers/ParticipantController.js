@@ -3,7 +3,7 @@ import ParticipantService from "../Services/ParticipantService.js";
 class ParticipantController{
           async joinVolunteerWork(req, res, next){
                     try{
-                              var participant=ParticipantService.joinVolunteerWork(req.student, req.body);
+                              var participant=await ParticipantService.joinVolunteerWork(req.student, req.body);
                               return res.status(200).json(participant);
                     }
                     catch(error){

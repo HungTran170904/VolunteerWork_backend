@@ -6,24 +6,26 @@ import CloudinaryService from "./CloudinaryService.js";
 import Event from "../Models/Event.js";
 import Question from "../Models/Question.js";
 import SchedulerService from "./SchedulerService.js";
+import createTransaction from "../Utils/Transaction.js";
 
 class VolunteerService{
-
           async addVolunteerWork(org,jsonData,file){ 
-                    var volunteerWork=JSON.parse(jsonData);   
-                    if(!volunteerWork.title)  throw new RequestError("Title is required");  
-                    if(!volunteerWork.receivedCoins) throw new RequestError("ReceivedCoins is required");
-                    volunteerWork.createdAt=new Date();
-                    volunteerWork.organization=org._id;  
-                    if(Array.isArray(volunteerWork.events)&&volunteerWork.events.length > 0){
-                              const savedEvents= await Event.insertMany(volunteerWork.events);
-                              volunteerWork.events=[];
-                              for(var savedEvent of savedEvents) 
-                                        volunteerWork.events.push(savedEvent._id);
-                    }
-                    if(file) volunteerWork.imageUrl=await CloudinaryService.uploadImage(file,null);
-                    var savedVolunteerWork= await VolunteerWork.create(volunteerWork);
-                    return savedVolunteerWork;
+                    return await createTransaction(async(session)=>{
+                              var volunteerWork=JSON.parse(jsonData);   
+                              if(!volunteerWork.title)  throw new RequestError("Title is required");  
+                              if(!volunteerWork.receivedCoins) throw new RequestError("ReceivedCoins is required");
+                              volunteerWork.createdAt=new Date();
+                              volunteerWork.organization=org._id;  
+                              if(Array.isArray(volunteerWork.events)&&volunteerWork.events.length > 0){
+                                        const savedEvents= await Event.insertMany(volunteerWork.events, {session});
+                                        volunteerWork.events=[];
+                                        for(var savedEvent of savedEvents) 
+                                                  volunteerWork.events.push(savedEvent._id);
+                              }
+                              if(file) volunteerWork.imageUrl=await CloudinaryService.uploadImage(file,null);
+                              var savedVolunteerWork= await VolunteerWork.create([volunteerWork],{session});
+                              return savedVolunteerWork;
+                    });
           }
 
           async getVolunteerWorkInfo(volunteerWorkId){
@@ -79,14 +81,16 @@ class VolunteerService{
           }
 
           async addEvent(event){ 
-                    var volunteerWork=await VolunteerWork.findById(event.volunteerWorkId);
-                    if(!volunteerWork) throw new RequestError("VolunteerWork of the event does not exist");
-                    var savedEvent=await Event.create(event);
-                    if(!volunteerWork.events) volunteerWork.events=[];
-                    volunteerWork.events.push(savedEvent._id);
-                    await volunteerWork.save();
-                    SchedulerService.scheduleEvent(volunteerWork,savedEvent);
-                    return savedEvent;
+                    return await createTransaction(async(session)=>{
+                              var volunteerWork=await VolunteerWork.findById(event.volunteerWorkId);
+                              if(!volunteerWork) throw new RequestError("VolunteerWork of the event does not exist");
+                              var savedEvent=(await Event.create([event],{ session }))[0];
+                              if(!volunteerWork.events) volunteerWork.events=[];
+                              volunteerWork.events.push(savedEvent._id);
+                              await volunteerWork.save({ session });
+                              SchedulerService.scheduleEvent(volunteerWork,savedEvent);
+                              return savedEvent;
+                    });
           }
 
           async deleteEvent(eventId){
@@ -97,17 +101,20 @@ class VolunteerService{
           }
 
           async addQuestion(student,question){
-                    if(!question.questionText||question.questionText.trim()=="")
-                              throw new RequestError("Please fill in your question about this volunteer work");
-                    var volunteerWork=await VolunteerWork.findById(question.volunteerWorkId);
-                    if(!volunteerWork) throw new RequestError("VolunteerWork of this question does not exist");
-                    question.studentId=student._id;
-                    question.createdAt=new Date();
-                    var savedQuestion= await Question.create(question);
-                    if(!volunteerWork.questions) volunteerWork.questions=[savedQuestion._id];
-                    else volunteerWork.questions.push(savedQuestion._id);
-                    await volunteerWork.save();
-                    return savedQuestion;
+                    return await createTransaction(async(session)=>{
+                              if(!question.questionText||question.questionText.trim()=="")
+                                        throw new RequestError("Please fill in your question about this volunteer work");
+                              var volunteerWork=await VolunteerWork.findById(question.volunteerWorkId);
+                              if(!volunteerWork) throw new RequestError("VolunteerWork of this question does not exist");
+                              question.studentId=student._id;
+                              question.createdAt=new Date();
+                              var savedQuestion= (await Question.create([question], {session}))[0];
+                              console.log("questionId", savedQuestion._id)
+                              if(!volunteerWork.questions) volunteerWork.questions=[savedQuestion._id];
+                              else volunteerWork.questions.push(savedQuestion._id);
+                              await volunteerWork.save({session});
+                              return savedQuestion;
+                    });                   
           }
 
           async answerQuestion({questionId, answer}){
@@ -137,10 +144,15 @@ class VolunteerService{
           async deleteVolunteerWork(volunteerWorkId){
                     var volunteerWork= await VolunteerWork.findById(volunteerWorkId);
                     if(!volunteerWork) throw new RequestError("VolunteerWorkId "+volunteerWorkId+" does not exist");
-                    SchedulerService.deleteScheduledEvents(volunteerWork.events);
-                    await Event.deleteMany({_id:{ $in: volunteerWork.events}});                   
-                    await Question.deleteMany({_id:{ $in: volunteerWork.questions}}); 
-                    await volunteerWork.deleteOne(); 
+                    return await createTransaction(async(session)=>{                          
+                              SchedulerService.deleteScheduledEvents(volunteerWork.events);
+                              await Event.deleteMany({_id:{ $in: volunteerWork.events}}).session(session);                   
+                              await Question.deleteMany({_id:{ $in: volunteerWork.questions}}).session(session);
+                              await Participant.deleteMany({volunteerWorkId: volunteerWork._id}).session(session); 
+                              await volunteerWork.deleteOne().session(session); 
+                    },async()=>{
+                              await SchedulerService.recoverScheduledEvents(volunteerWork);
+                    });
           }
 }
 export default new VolunteerService();

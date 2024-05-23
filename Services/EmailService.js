@@ -45,12 +45,14 @@ class EmailService{
                    this.#send(options);
           }
           remindUpcomingVolunteerWork(students, event){
+                    var content=`<div>Hi ${student.name}, the volunteer event <b>${event.title}</b> will start at <b>${DateUtil.printDate(event.startDate)}</b>. Don't forget to attend this wonderful activity</div>`;
+                    content+=`</br><img width=200px height=200px src=${volunteerWork.imageUrl}/>`;
                     for(var student of students){
                         var options = {
                             from: EMAIL_USER,
                             to: student.account.email,
                             subject: 'Upcoming Volunteer Work',
-                            html: `<div>Hi ${student.name}, the volunteer event <b>${event.title}</b> will start at <b>${DateUtil.printDate(event.startDate)}</b>. Don't forget to attend this wonderful activity</div>`
+                            html: content
                         };
                         this.#send(options);
                     }
