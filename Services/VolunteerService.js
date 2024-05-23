@@ -23,7 +23,7 @@ class VolunteerService{
                                                   volunteerWork.events.push(savedEvent._id);
                               }
                               if(file) volunteerWork.imageUrl=await CloudinaryService.uploadImage(file,null);
-                              var savedVolunteerWork= await VolunteerWork.create([volunteerWork],{session});
+                              var savedVolunteerWork= (await VolunteerWork.create([volunteerWork],{session}))[0];
                               return savedVolunteerWork;
                     });
           }
@@ -149,6 +149,7 @@ class VolunteerService{
                               await Event.deleteMany({_id:{ $in: volunteerWork.events}}).session(session);                   
                               await Question.deleteMany({_id:{ $in: volunteerWork.questions}}).session(session);
                               await Participant.deleteMany({volunteerWorkId: volunteerWork._id}).session(session); 
+                              CloudinaryService.deleteImage(volunteerWork.imageUrl);
                               await volunteerWork.deleteOne().session(session); 
                     },async()=>{
                               await SchedulerService.recoverScheduledEvents(volunteerWork);

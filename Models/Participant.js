@@ -13,7 +13,7 @@ const ParticipantSchema=new Schema({
           },
           feedback: String,
           rating: Number,
-    receivedCoins: Number,
+        receivedCoins: Number,
           createdAt: Date
 });
 ParticipantSchema.statics.findVolunteerWorkIdsByStudentId=
