@@ -15,5 +15,6 @@ OrgRouter.get("/organizationInfo",OrgController.getOrganizationInfo);
 OrgRouter.post("/uploadAvatar",OrgMiddleware,UploadMiddleware,OrgController.uploadAvatar);
 OrgRouter.get("/verifyOrganization",AdminMiddleware,OrgController.verifyOrganization);
 OrgRouter.post("/updateOrganization",OrgMiddleware, OrgController.updateOrganization);
+OrgRouter.post("/organizations", OrgController.getOrganizations);
 
 export default OrgRouter;

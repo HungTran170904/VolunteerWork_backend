@@ -40,5 +40,15 @@ class StudentController{
                               next(error);
                     }
           }
+
+          async getTop10Students(req, res, next){
+                    try{                            
+                              var students= await StudentService.getTop10Students();
+                              return res.status(200).json(students);
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
 }
 export default new StudentController();

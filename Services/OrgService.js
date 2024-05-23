@@ -33,5 +33,16 @@ class OrgService{
                     await sOrg.save();
                     return sOrg;
           }
+
+          async getOrganizations({page, limit}){
+                    if(limit<=0) throw new RequestError("Limit must be positive");
+                    if(page<=0) page=1;
+                    const organizations=await Organization.findWithPagination(page, limit);
+                    var total=await Organization.countAll();
+                    return {
+                              data: organizations,
+                              pagination: {total, currentPage: page}
+                    };
+          }
 }
 export default new OrgService();

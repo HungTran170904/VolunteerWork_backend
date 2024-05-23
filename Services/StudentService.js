@@ -25,5 +25,12 @@ class StudentService{
                     await sStudent.save();
                     return sStudent;
           }
+
+          async getTop10Students(){
+                    return await Student.find()
+                                        .limit(10)
+                                        .sort({totalPoints: -1})
+                                        .exec();
+          }
 }
 export default new StudentService();

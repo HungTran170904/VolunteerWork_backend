@@ -49,5 +49,15 @@ class OrgController{
                               next(error);
                     }
           }
+
+          async getOrganizations(req,res,next){
+                    try{
+                              var organizations=await OrgService.getOrganizations(req.body);
+                              return res.status(200).json(organizations);
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
 }
 export default new OrgController();
