@@ -16,11 +16,14 @@ class VolunteerService{
                               if(!volunteerWork.receivedCoins) throw new RequestError("ReceivedCoins is required");
                               volunteerWork.createdAt=new Date();
                               volunteerWork.organization=org._id;  
+                              //volunteerWork
                               if(Array.isArray(volunteerWork.events)&&volunteerWork.events.length > 0){
                                         const savedEvents= await Event.insertMany(volunteerWork.events, {session});
                                         volunteerWork.events=[];
-                                        for(var savedEvent of savedEvents) 
+                                        for(var savedEvent of savedEvents) {
                                                   volunteerWork.events.push(savedEvent._id);
+                                                  SchedulerService.scheduleEvent(volunteerWork, savedEvent);
+                                        }
                               }
                               if(file) volunteerWork.imageUrl=await CloudinaryService.uploadImage(file,null);
                               var savedVolunteerWork= (await VolunteerWork.create([volunteerWork],{session}))[0];
@@ -81,9 +84,11 @@ class VolunteerService{
           }
 
           async addEvent(event){ 
+                    if(event.startDate>event.endDate) 
+                              throw new RequestError("Start date must be before than end date");
+                    var volunteerWork=await VolunteerWork.findById(event.volunteerWorkId);
+                    if(!volunteerWork) throw new RequestError("VolunteerWork of the event does not exist");
                     return await createTransaction(async(session)=>{
-                              var volunteerWork=await VolunteerWork.findById(event.volunteerWorkId);
-                              if(!volunteerWork) throw new RequestError("VolunteerWork of the event does not exist");
                               var savedEvent=(await Event.create([event],{ session }))[0];
                               if(!volunteerWork.events) volunteerWork.events=[];
                               volunteerWork.events.push(savedEvent._id);

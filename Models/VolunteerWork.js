@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import Event from "./Event.js";
 const {ObjectId}=Schema.Types;
 
 const VolunteerWorkSchema=Schema({
@@ -16,7 +15,7 @@ const VolunteerWorkSchema=Schema({
                     type: ObjectId,
                     ref: "Organization",
                     required: true
-      },
+            },
           contactInfo: String,
           requirements: String,
           benefits: String,

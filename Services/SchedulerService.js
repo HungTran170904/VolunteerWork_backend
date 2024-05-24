@@ -26,7 +26,6 @@ class SchedulerService{
                               var students=await Student.findByIds(studentIds);
                               EmailService.remindUpcomingVolunteerWork(students,event);
                     });
-                   // console.log("event:","Id:"+event._id+"-Date"+scheduledDate);
           }
 
           async recoverScheduledEvents(volunteerWork){
