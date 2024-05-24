@@ -37,5 +37,14 @@ class ParticipantController{
                               next(error);
                     }
           }
+          async getFinishedParticipants(req, res, next){
+                    try{
+                              var participants=await ParticipantService.getFinishedParticipants(req.params["id"]);
+                              return res.status(200).json(participants);
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
 }
 export default new ParticipantController();

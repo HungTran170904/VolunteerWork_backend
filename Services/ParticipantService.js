@@ -49,6 +49,10 @@ class ParticipantService{
 					            }).populate('studentId');
           }
 
+          async getFinishedParticipants(studentId){
+                return await Participant.find({studentId: studentId, status: FINISH});
+          }
+
           async giveFeedBack({participantId,feedback, rating}){
             return await createTransaction(async(session)=>{
               if(rating<0||rating>10) throw new RequestError("Rating must be in range [0,10]");
