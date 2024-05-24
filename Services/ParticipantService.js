@@ -50,7 +50,7 @@ class ParticipantService{
           }
 
           async getFinishedParticipants(studentId){
-                return await Participant.find({studentId: studentId, status: FINISH});
+                return await Participant.find({studentId: studentId, status: FINISH}).populate('volunteerWorkId');
           }
 
           async giveFeedBack({participantId,feedback, rating}){

@@ -40,7 +40,7 @@ class CloudinaryService {
   }
   async deleteImage(imageUrl){
     if (imageUrl && imageUrl.includes('res.cloudinary.com')) {
-          var public_id = existsUrl.split('/').slice(-1)[0].split('.')[0];
+          var public_id = imageUrl.split('/').slice(-1)[0].split('.')[0];
           cloudinary.uploader.destroy(public_id,(result)=>{
               console.log("delete image successfully: "+result);
           })

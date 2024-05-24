@@ -6,7 +6,10 @@ const ParticipantSchema=new Schema({
           type: ObjectId,
           ref: 'Student'
       },
-          volunteerWorkId: ObjectId,
+  volunteerWorkId: {
+    type: ObjectId,
+    ref: 'VolunteerWork'
+          },
           status:{
                     type: String,
                     enum: ["ACCEPTED","UNACCEPTED","WAITING","FINISH"]
