@@ -15,6 +15,7 @@ const OrgMiddleware=async(req,res,next)=>{
                     // authorization
                     if(account.role!=ORGANIZATION) throw new AuthError("This endpoint is only for organizations");
                     var org=await Organization.findOne({account:account._id});
+                    if(!org.isVerified) throw new AuthError("This organization need to be verified by admin");
                     if(!org) throw new AuthError("Organization with accountId "+account._id+" does not exist");
                     req.org=org;
                     next();

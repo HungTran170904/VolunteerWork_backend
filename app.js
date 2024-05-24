@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { connectDatabase } from "./Config/DBConfig.js";
-import { PORT } from "./Config/index.js";
+import { FRONTEND_ORIGIN, PORT } from "./Config/index.js";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import AuthRouter from "./Routers/AuthRouter.js";
@@ -19,7 +19,7 @@ connectDatabase();
 SchedulerService.loadScheduledEvents();
 
 app.use(cors({
-          origin: ['http://localhost:3000'],
+          origin: [FRONTEND_ORIGIN],
           credentials: true,
 }));
 app.use(compression());

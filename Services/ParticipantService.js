@@ -15,7 +15,7 @@ class ParticipantService{
 
                     participant.studentId=student._id;
                     participant.status=WAITING;
-            participant.createdAt = new Date();
+                    participant.createdAt = new Date();
                     return await Participant.create(participant);
           }
 

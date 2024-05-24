@@ -9,7 +9,7 @@ class AuthController{
                               res.cookie("Authorization",TokenHandler.generateToken(account) ,{
                                                   httpOnly: true, 
                                                   maxAge: new Date(EXPIRATION*1000),
-                                                  path: "/"
+                                                  path: "/"                                      
                                         });
                               return res.status(200).json(account);
                     }

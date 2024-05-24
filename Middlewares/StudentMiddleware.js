@@ -22,6 +22,7 @@ const StudentMiddleware=async(req,res,next)=>{
           }
           catch(error){
                     next(error);
+                    console.log(error)
           }
 }
 export default StudentMiddleware;

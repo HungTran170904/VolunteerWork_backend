@@ -11,3 +11,5 @@ export const {SECRET_KEY,EXPIRATION}=process.env;
 export const {EMAIL_USER, EMAIL_PASS}=process.env;
 // Cloudinary
 export const { API_KEY, API_SECRET, CLOUDINARY_URL, CLOUD_NAME }=process.env;
+// Frontend
+export const {FRONTEND_ORIGIN}=process.env;
