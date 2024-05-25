@@ -35,7 +35,7 @@ class EmailService{
                     var content="";
                     if(isAccepted)  content=`<div>Hi ${student.name}, you've been accepted to join the volunteer project named <b>${volunteerWork.title}</b>. Congratulations!!</div>`;
                     else content=`<div>Hi ${student.name}, you has been rejected to join the volunteer project named <b>${volunteerWork.title}</b>. Wish you luck next time</div>`;
-                    content+=`</br><img width=200px height=200px src=${volunteerWork.imageUrl}/>`
+                    content+=`</br><img width=200px height=200px src="${volunteerWork.imageUrl}" />`
                     var options = {
                               from: EMAIL_USER,
                               to: student.account.email,
@@ -47,7 +47,7 @@ class EmailService{
           remindUpcomingVolunteerWork(students, event){
                     for(var student of students){
                       var content=`<div>Hi ${student.name}, the volunteer event <b>${event.title}</b> will start at <b>${DateUtil.printDate(event.startDate)}</b>. Don't forget to attend this wonderful activity</div>`;
-                      content+=`</br><img width=200px height=200px src=${volunteerWork.imageUrl}/>`;
+                      content+=`</br><img width=200px height=200px src="${volunteerWork.imageUrl}" />`;
                         var options = {
                             from: EMAIL_USER,
                             to: student.account.email,
