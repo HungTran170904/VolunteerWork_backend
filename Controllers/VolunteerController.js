@@ -52,10 +52,10 @@ class VolunteerController{
                     }
           }
 
-          async getEventsDuring(req, res, next){
+          async getEventsOfWeek(req, res, next){
                     try{
-                              var events= await VolunteerService.getEventsDuring(req.student,req.body);
-                              return res.status(200).json(events);
+                              var result= await VolunteerService.getEventsOfWeek(req.student,req.query["week"]);
+                              return res.status(200).json(result);
                     }
                     catch(error){
                               next(error);

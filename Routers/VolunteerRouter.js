@@ -23,7 +23,7 @@ VolunteerRouter.post("/orgVolunteerWorks",VolunteerController.getOrgVolunteerWor
 VolunteerRouter.get("/registeredVolunteerWorks",StudentMiddleware,VolunteerController.getRegisteredVolunteerWorks);
 
 // get all events that a student may attend during a time range. This endpoint is useful for making time table.
-VolunteerRouter.post("/eventsDuring",StudentMiddleware,VolunteerController.getEventsDuring);
+VolunteerRouter.get("/eventsOfWeek",StudentMiddleware,VolunteerController.getEventsOfWeek);
 
 // add a new event to a volunteer work
 VolunteerRouter.post("/newEvent",OrgMiddleware,VolunteerController.addEvent);

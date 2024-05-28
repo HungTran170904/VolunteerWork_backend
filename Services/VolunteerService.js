@@ -7,6 +7,7 @@ import Event from "../Models/Event.js";
 import Question from "../Models/Question.js";
 import SchedulerService from "./SchedulerService.js";
 import createTransaction from "../Utils/Transaction.js";
+import DateUtil from "../Utils/dateUtil.js";
 
 class VolunteerService{
           async addVolunteerWork(org,jsonData,file){ 
@@ -63,7 +64,10 @@ class VolunteerService{
           }
 
           // weekRange={startDate, endDate}
-          async getEventsDuring(student,weekRange){
+          async getEventsOfWeek(student,week){
+                    console.log("Week", week);
+                    const weekRange= DateUtil.getWeekDateRange(week);
+                    console.log("Week range", weekRange);
                     var volunteerWorkIds=await Participant.findVolunteerWorkIdsByStudentId(student._id);
                     var volunteerWorks=await VolunteerWork.findWithEvents(volunteerWorkIds,weekRange);
                     var events=[];
@@ -74,7 +78,10 @@ class VolunteerService{
                                         }
                               }
                     }
-                    return events;
+                    return {
+                              data:events,
+                              weekRange
+                    }
           }
 
           async getRegisteredVolunteerWorks(student){

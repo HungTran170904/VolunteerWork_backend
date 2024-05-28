@@ -10,7 +10,6 @@ const VolunteerWorkSchema=Schema({
           imageUrl: String,
           description: String,
           receivedCoins: Number,
-          needDonation: Boolean,
           organization: {
                     type: ObjectId,
                     ref: "Organization",

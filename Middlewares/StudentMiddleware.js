@@ -12,7 +12,6 @@ const StudentMiddleware=async(req,res,next)=>{
                     if(!token) throw new AuthError("Token does not exist");
                     var accountId=jwt.verify(token, SECRET_KEY);
                     const account=await Account.findById(accountId);
-                    console.log("Account", account);
                     // authorization
                     if(account.role!=STUDENT) throw new AuthError("This endpoint is only for students");
                     var student=await Student.findOne({account:account._id});
