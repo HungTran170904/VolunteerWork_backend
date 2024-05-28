@@ -41,6 +41,12 @@ class VolunteerService{
                     return volunteerWork;
           }
 
+          async searchByTitle(searchString){
+                    var volunteerWorks= await VolunteerWork.find({$text: {$search: searchString}})
+                                                            .limit(10);
+                    return volunteerWorks;
+          }
+
           async getVolunteerWorks({page, limit}){
                     if(limit<=0) throw new RequestError("Limit must be positive");
                     if(page<=0) page=1;
@@ -65,7 +71,6 @@ class VolunteerService{
 
           // weekRange={startDate, endDate}
           async getEventsOfWeek(student,week){
-                    console.log("Week", week);
                     const weekRange= DateUtil.getWeekDateRange(week);
                     console.log("Week range", weekRange);
                     var volunteerWorkIds=await Participant.findVolunteerWorkIdsByStudentId(student._id);

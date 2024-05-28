@@ -22,6 +22,16 @@ class VolunteerController{
                     }
           }
 
+          async searchByTitle(req, res, next){
+                    try{
+                              var volunteerWorks= await VolunteerService.searchByTitle(req.query["searchString"]);
+                              return res.status(200).json(volunteerWorks);
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
+
           async getVolunteerWorks(req, res, next){
                     try{
                               var volunteerWorks= await VolunteerService.getVolunteerWorks(req.body);

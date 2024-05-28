@@ -20,6 +20,16 @@ class OrgController{
                     }
           }
 
+          async searchByName(req,res,next){
+                    try{
+                              var organizations=await OrgService.searchByName(req.query["searchString"]);
+                              return res.status(200).json(organizations);
+                    }
+                    catch(error){
+                              next(error);
+                    }
+          }
+
           async uploadAvatar(req,res,next){
                     try{
                               var avatarUrl=await OrgService.uploadAvatar(req.org, req.file);

@@ -16,6 +16,8 @@ OrgRouter.get("/loginedInfo",OrgMiddleware,OrgController.getLoginedInfo);
 // get general info of an organization
 OrgRouter.get("/organizationInfo",OrgController.getOrganizationInfo);
 
+OrgRouter.get("/searchByName", OrgController.searchByName);
+
 // upload avatar
 OrgRouter.post("/uploadAvatar",OrgMiddleware,UploadMiddleware,OrgController.uploadAvatar);
 

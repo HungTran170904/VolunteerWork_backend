@@ -13,6 +13,8 @@ VolunteerRouter.post("/newVolunteerWork",OrgMiddleware,UploadMiddleware,Voluntee
 // get info of a volunteer work. Provide volunteerWorkId as a param
 VolunteerRouter.get("/volunteerWorkInfo",VolunteerController.getVolunteerWorkInfo);
 
+VolunteerRouter.get("/searchByTitle", VolunteerController.searchByTitle);
+
 // get all volunteer work existed in db
 VolunteerRouter.post("/volunteerWorks",VolunteerController.getVolunteerWorks);
 

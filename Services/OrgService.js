@@ -10,6 +10,12 @@ class OrgService{
                     return organization;
           }
 
+          async searchByName(searchString){
+                    var organizations= await Organization.find({$text: {$search: searchString}})
+                                                            .limit(10);
+                    return organizations;
+          }
+
           async uploadAvatar(org,file){
                     org.avatarUrl=await CloudinaryService.uploadImage(file,org.avatarUrl);
                     await org.save();
