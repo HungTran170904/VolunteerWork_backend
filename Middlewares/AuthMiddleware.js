@@ -1,16 +1,18 @@
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../Config/index.js";
 import AuthError from "../Errors/AuthError.js";
-import { ADMIN } from "../Utils/Constraints.js";
 import Account from "../Models/Account.js";
+
+export async function getAccountFromToken(req){
+          const token=req.headers["authorization"];
+          if(!token) throw new AuthError("Token does not exist");
+          var accountId=jwt.verify(token, SECRET_KEY);
+          return await Account.findById(accountId);
+}
+
 const AuthMiddleware=async(req,res,next)=>{         
           try {    
-                    //decode jwt
-                    const token=req.cookies["Authorization"];
-                    if(!token) throw new AuthError("Token does not exist");
-                    var accountId=jwt.verify(token, SECRET_KEY);
-                    const account=await Account.findById(accountId);
-                    req.account=account;
+                    req.account= await getAccountFromToken(req);
                     next();
           } catch (error) {
                     error.status=401;

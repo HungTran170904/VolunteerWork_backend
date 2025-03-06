@@ -5,6 +5,7 @@ import { ORGANIZATION, STUDENT } from "../Utils/Constraints.js";
 import Organization from "../Models/Organization.js";
 import Student from "../Models/Student.js";
 import EmailService from "./EmailService.js";
+import TokenHandler from "../Utils/TokenHandler.js";
 
 class AuthService{
           async login({email, password}){
@@ -14,7 +15,7 @@ class AuthService{
                     if(!bcrypt.compareSync(password, account.password))
                               throw new RequestError("Password is incorrect");
                     account.password="";
-                    return account;
+                    return { account, jwtToken: TokenHandler.generateToken(account)};
           }
 
           async #addNewAccount(newAccount, role){

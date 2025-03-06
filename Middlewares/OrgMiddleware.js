@@ -1,18 +1,11 @@
-import jwt from "jsonwebtoken";
-import { SECRET_KEY } from "../Config/index.js";
 import AuthError from "../Errors/AuthError.js";
-import Account from "../Models/Account.js";
 import Organization from "../Models/Organization.js";
 import { ORGANIZATION } from "../Utils/Constraints.js";
+import { getAccountFromToken } from "./AuthMiddleware.js";
 
 const OrgMiddleware=async(req,res,next)=>{
           try{
-                    //decode jwt
-                    const token=req.cookies["Authorization"];
-                    if(!token) throw new AuthError("Token does not exist");
-                    var accountId=jwt.verify(token, SECRET_KEY);
-                    const account=await Account.findById(accountId);
-                    // authorization
+                    const account= await getAccountFromToken(req);
                     if(account.role!=ORGANIZATION) throw new AuthError("This endpoint is only for organizations");
                     var org=await Organization.findOne({account:account._id});
                     // if(!org.isVerified) throw new AuthError("This organization need to be verified by admin");

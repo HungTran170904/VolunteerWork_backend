@@ -1,7 +1,6 @@
 import AuthError from "../Errors/AuthError.js";
 import RequestError from "../Errors/RequestError.js";
 import Organization from "../Models/Organization.js";
-import { ADMIN, ORGANIZATION } from "../Utils/Constraints.js";
 import CloudinaryService from "./CloudinaryService.js";
 
 class OrgService{

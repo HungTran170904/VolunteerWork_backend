@@ -13,6 +13,6 @@ GiftRouter.post("/addGift", AdminMiddleware,UploadMiddleware, GiftController.add
 GiftRouter.get("/gifts",GiftController.getGifts);
 
 // a student registers to receive a gift
-GiftRouter.post("/awardGift",StudentMiddleware, GiftController.awardGift);
+GiftRouter.post("/awardGift", StudentMiddleware, GiftController.awardGift);
 
 export default GiftRouter;

@@ -6,17 +6,13 @@ class AuthController{
           async login(req,res,next){
                     try{
                               const account=await AuthService.login(req.body);
-                              res.cookie("Authorization",TokenHandler.generateToken(account) ,{
-                                                  httpOnly: true, 
-                                                  maxAge: new Date(EXPIRATION*1000),
-                                                  path: "/"                                      
-                                        });
                               return res.status(200).json(account);
                     }
                     catch(error){
                               next(error);
                     }
           }
+          
           async registryStudent(req,res,next){
                     try{
                               var student=await AuthService.registryStudent(req.body);

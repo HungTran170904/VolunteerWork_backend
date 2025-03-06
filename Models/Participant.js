@@ -2,10 +2,10 @@ import mongoose, { Schema } from "mongoose";
 const {ObjectId}=Schema.Types;
 
 const ParticipantSchema=new Schema({
-      studentId: {
+  studentId: {
           type: ObjectId,
           ref: 'Student'
-      },
+  },
   volunteerWorkId: {
     type: ObjectId,
     ref: 'VolunteerWork'
@@ -16,7 +16,7 @@ const ParticipantSchema=new Schema({
           },
           feedback: String,
           rating: Number,
-        receivedCoins: Number,
+          receivedCoins: Number,
           createdAt: Date
 });
 ParticipantSchema.statics.findVolunteerWorkIdsByStudentId=
